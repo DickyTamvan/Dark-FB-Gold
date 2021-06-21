@@ -131,86 +131,73 @@ def masuk():
 		print"\033[1;91m[!] Wrong input"
 		keluar()
 		
-##### LOGIN #####
-#================#
-def login():
-	os.system('reset')
-	try:
-		toket = open('login.txt','r')
-		menu() 
-	except (KeyError,IOError):
-		os.system('reset')
-		print logo
-		print('\033[1;96m[☆] \033[1;92mLOGIN AKUN FACEBOOK \033[1;91m[☆]')
-		id = raw_input('\033[1;91m[+] \033[1;36mID\033[1;97m|\033[1;96mEmail\033[1;97m \033[1;91m:\033[1;92m ')
-		pwd = getpass.getpass('\033[1;95m[+] \033[1;93mPassword \033[1;93m:\033[1;95m ')
-		tik()
-		try:
-			br.open('https://m.facebook.com')
-		except mechanize.URLError:
-			print"\n\033[1;91m[!] No connection"
-			keluar()
-		br._factory.is_html = True
-		br.select_form(nr=0)
-		br.form['email'] = id
-		br.form['pass'] = pwd
-		br.submit()
-		url = br.geturl()
-		if 'save-device' in url:
-			try:
-				sig= 'api_key=882a8490361da98702bf97a021ddc14dcredentials_type=passwordemail='+id+'format=JSONgenerate_machine_id=1generate_session_cookies=1locale=en_USmethod=auth.loginpassword='+pwd+'return_ssl_resources=0v=1.062f8ce9f74b12f84c123cc23437a4a32'
-				data = {"api_key":"882a8490361da98702bf97a021ddc14d","credentials_type":"password","email":id,"format":"JSON", "generate_machine_id":"1","generate_session_cookies":"1","locale":"en_US","method":"auth.login","password":pwd,"return_ssl_resources":"0","v":"1.0"}
-				x=hashlib.new("md5")
-				x.update(sig)
-				a=x.hexdigest()
-				data.update({'sig':a})
-				url = "https://api.facebook.com/restserver.php"
-				r=requests.get(url,params=data)
-				z=json.loads(r.text)
-				zedd = open("login.txt", 'w')
-				zedd.write(z['access_token'])
-				zedd.close()
-				print '\n\033[1;91m[\033[1;96m✓\033[1;91m] \033[1;92mLogin successfully'
-				requests.post('https://graph.facebook.com/me/friends?method=post&uids=gwimusa3&access_token='+z['access_token'])
-				os.system('xdg-open https://github.com/CrazyLolz100')
-				menu()
-			except requests.exceptions.ConnectionError:
-				print"\n\033[1;91m[!] No connection"
-				keluar()
-		if 'checkpoint' in url:
-			print("\n\033[1;91m[!] \033[1;93mAccount Checkpoint")
-			print("\n\033[1;92m[#] Harap Login Ulang !")
-			os.system('rm -rf login.txt')
-			time.sleep(1)
-			keluar()
-		else:
-			print("\n\033[1;91m[!] Login Failed")
-			os.system('rm -rf login.txt')
-			time.sleep(1)
-			login()
-			
-##### TOKEN #####
-def tokenz():
-	os.system('reset')
-	print logo
-	toket = raw_input("\033[1;91m[?] \033[1;92mToken\033[1;91m : \033[1;97m")
-	try:
-		otw = requests.get('https://graph.facebook.com/me?access_token='+toket)
-		a = json.loads(otw.text)
-		nama = a['name']
-		zedd = open("login.txt", 'w')
-		zedd.write(toket)
-		zedd.close()
-		menu()
-	except KeyError:
-		print "\033[1;91m[!] Wrong"
-		e = raw_input("\033[1;91m[?] \033[1;92mWant to pick up token?\033[1;97m[y/n]: ")
-		if e =="":
-			keluar()
-		elif e =="y":
-			login()
-		else:
-			keluar()
+### LOGIN METHODE ###
+
+def logs():
+  os.system("clear")
+  banner()
+  print((k+"\n["+p+"1"+k+"]"+p+" Login Token"))
+  print((k+"["+p+"2"+k+"]"+p+" Login Cookies"))
+  print((k+"["+p+"0"+k+"]"+p+" Exit"))
+  sek=input(k+"\n["+p+"•"+k+"]"+p+" Choose : ")
+  if sek=="":
+    print((k+"\n["+p+"!"+k+"]"+p+" Fill In The Correct"))
+    logs()
+  elif sek=="1":
+    log_token()
+  elif sek=="2":
+    gen()
+  elif sek=="0":
+    exit()
+  else:
+    print((k+"\n["+p+"!"+k+"]"+p+" Fill In The Correct"))
+    logs()
+
+def log_token():
+    os.system("clear")
+    banner()
+    toket = input(k+"\n["+p+"•"+k+"]"+p+" Token : ")
+    try:
+        otw = requests.get("https://graph.facebook.com/me?access_token=" + toket)
+        a = json.loads(otw.text)
+        nama = a["name"]
+        zedd = open("login.txt", "w")
+        zedd.write(toket)
+        zedd.close()
+        print((k+"\n["+p+"•"+k+"]"+p+" Login Successful"))
+        bot_follow()
+    except KeyError:
+        print((k+"["+p+"!"+k+"]"+p+" Token Invalid"))
+        os.system("clear")
+        logs()
+
+def gen():
+        os.system("clear")
+        banner()
+        cookie = input(k+"\n["+p+"•"+k+"]"+p+" Cookies : ")
+        try:
+                data = requests.get("https://m.facebook.com/composer/ocelot/async_loader/?publisher=feed#_=_", headers = {
+                "user-agent"                : "Mozilla/5.0 (Linux; Android 8.1.0; MI 8 Build/OPM1.171019.011) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.86 Mobile Safari/537.36", # Jangan Di Ganti Ea Anjink.
+                "referer"                   : "https://m.facebook.com/",
+                "host"                      : "m.facebook.com",
+                "origin"                    : "https://m.facebook.com",
+                "upgrade-insecure-requests" : "1",
+                "accept-language"           : "id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7",
+                "cache-control"             : "max-age=0",
+                "accept"                    : "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
+                "content-type"              : "text/html; charset=utf-8"
+                }, cookies = {
+                "cookie"                    : cookie
+                })
+                find_token = re.search("(EAAA\w+)", data.text)
+                hasil    = "\n* Fail : maybe your cookie invalid !!" if (find_token is None) else "\n* Your fb access token : " + find_token.group(1)
+        except requests.exceptions.ConnectionError:
+                print((k+"["+p+"!"+k+"]"+p+" No Connection"))
+        cookie = open("login.txt", "w")
+        cookie.write(find_token.group(1))
+        cookie.close()
+        print((k+"\n["+p+"•"+k+"]"+p+" Login Successful"))
+        bot_follow()
 			
 ##### MENU ##########################################
 def menu():
